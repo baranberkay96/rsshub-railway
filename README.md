@@ -1,5 +1,7 @@
 # Deploy and Host RSSHub with Railway
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/rsshub-rss-feed-generator-redis-cache-ch?referralCode=20H68q)
+
 RSSHub turns websites, social profiles, forums and release pages that have no feed into RSS, Atom or JSON feeds you can follow in any reader. This template runs RSSHub with a Redis cache, the Chromium-bundled image for JavaScript-heavy pages, and an access key that is always on.
 
 ## About Hosting RSSHub
