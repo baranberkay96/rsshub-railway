@@ -1,0 +1,154 @@
+{
+  "name": "RSSHub RSS Feed Generator (Redis cache, Chromium)",
+  "idSeed": "RSSHub RSS Feed Generator (Redis cache, Chromium)",
+  "description": "RSS feeds for sites that have none, with an access key and Redis cache.",
+  "category": "Other",
+  "tags": [
+    "rsshub",
+    "rss",
+    "atom",
+    "feeds",
+    "aggregator",
+    "redis",
+    "self-hosted"
+  ],
+  "image": "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/rsshub.svg",
+  "upstream": {
+    "repo": "DIYgod/RSSHub",
+    "version": "rolling build 2026-11-24 (commit f249d128)",
+    "license": "AGPL-3.0",
+    "images": {
+      "rsshub": "diygod/rsshub:chromium-bundled-2026-11-24@sha256:54998d187e74780ee46f359e13b0e5b339b4c6c149daddb71e71ec88122e198e",
+      "redis": "redis:8.2.11@sha256:b0b01167ff47bc3868e56a967895a26be4230891a1f42a78ab61cdd227accc8d"
+    },
+    "checked": "2026-11-24"
+  },
+  "services": {
+    "RSSHub": {
+      "icon": "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/rsshub.svg",
+      "source": {
+        "repo": "baranberkay96/rsshub-railway",
+        "rootDirectory": "/services/rsshub"
+      },
+      "startCommand": null,
+      "preDeployCommand": null,
+      "healthcheckPath": "/",
+      "healthcheckTimeout": 600,
+      "restartPolicyType": "ALWAYS",
+      "numReplicas": 1,
+      "cronSchedule": null,
+      "publicDomain": true,
+      "targetPort": 1200,
+      "tcpProxy": null,
+      "volume": null,
+      "variables": {
+        "PORT": {
+          "defaultValue": "1200",
+          "description": "Port RSSHub listens on.",
+          "required": false
+        },
+        "ACCESS_KEY": {
+          "defaultValue": "${{secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+          "description": "Required in every feed URL (?key=...). Under 16 characters locks all feeds with a random key.",
+          "required": false
+        },
+        "NODE_ENV": {
+          "defaultValue": "production",
+          "description": "Production mode.",
+          "required": false
+        },
+        "CACHE_TYPE": {
+          "defaultValue": "redis",
+          "description": "Cache feeds in Redis.",
+          "required": false
+        },
+        "REDIS_URL": {
+          "defaultValue": "${{Redis.REDIS_URL}}/?family=0",
+          "description": "Redis on the private network (IPv4 and IPv6).",
+          "required": false
+        },
+        "CACHE_EXPIRE": {
+          "defaultValue": "300",
+          "description": "Seconds a route's result is cached.",
+          "required": false
+        },
+        "CACHE_CONTENT_EXPIRE": {
+          "defaultValue": "3600",
+          "description": "Seconds fetched article content is cached.",
+          "required": false
+        },
+        "DEBUG_INFO": {
+          "defaultValue": "false",
+          "description": "Hide debug details on the home page.",
+          "required": false
+        },
+        "DISALLOW_ROBOT": {
+          "defaultValue": "true",
+          "description": "Ask search engines not to index this instance.",
+          "required": false
+        },
+        "NO_LOGFILES": {
+          "defaultValue": "true",
+          "description": "Log to stdout only (Railway logs).",
+          "required": false
+        },
+        "TZ": {
+          "defaultValue": "UTC",
+          "description": "Time zone for dates in feeds (the image defaults to Asia/Shanghai).",
+          "required": false
+        }
+      }
+    },
+    "Redis": {
+      "icon": "https://cdn.sanity.io/images/sy1jschh/production/0ce0bfdcfbdbf69662b1116671f97c2dd788b655-157x157.svg",
+      "source": {
+        "image": "redis:8.2.11@sha256:b0b01167ff47bc3868e56a967895a26be4230891a1f42a78ab61cdd227accc8d"
+      },
+      "startCommand": "/bin/sh -c \"rm -rf $RAILWAY_VOLUME_MOUNT_PATH/lost+found/ && exec docker-entrypoint.sh redis-server --requirepass $REDIS_PASSWORD --save 60 1 --dir $RAILWAY_VOLUME_MOUNT_PATH\"",
+      "preDeployCommand": null,
+      "healthcheckPath": null,
+      "healthcheckTimeout": null,
+      "restartPolicyType": "ALWAYS",
+      "numReplicas": 1,
+      "cronSchedule": null,
+      "publicDomain": false,
+      "targetPort": null,
+      "tcpProxy": null,
+      "volume": {
+        "mountPath": "/data"
+      },
+      "variables": {
+        "REDISHOST": {
+          "defaultValue": "${{RAILWAY_PRIVATE_DOMAIN}}",
+          "description": "Private network hostname of the Redis service.",
+          "required": false
+        },
+        "REDISPORT": {
+          "defaultValue": "6379",
+          "description": "Port that Redis listens on.",
+          "required": false
+        },
+        "REDISUSER": {
+          "defaultValue": "default",
+          "description": "Username for authenticating with Redis.",
+          "required": false
+        },
+        "REDIS_PASSWORD": {
+          "defaultValue": "${{ secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\") }}",
+          "description": "Randomly generated password for authenticating with Redis.",
+          "required": false
+        },
+        "REDISPASSWORD": {
+          "defaultValue": "${{REDIS_PASSWORD}}",
+          "description": "Alias of REDIS_PASSWORD.",
+          "required": false
+        },
+        "REDIS_URL": {
+          "defaultValue": "redis://${{ REDISUSER }}:${{ REDIS_PASSWORD }}@${{ REDISHOST }}:${{ REDISPORT }}",
+          "description": "Private connection URL used by RSSHub's cache.",
+          "required": false
+        }
+      }
+    }
+  }
+}
