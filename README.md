@@ -45,7 +45,7 @@ A public RSSHub without protection can be used by anyone as a fetching proxy. Th
 
 **Versions.** RSSHub has no numbered releases; the image is a dated build pinned in `services/rsshub/Dockerfile` (`RSSHUB_IMAGE`, tag and digest). To update, pick a newer `chromium-bundled-YYYY-MM-DD` tag and its digest from Docker Hub and redeploy.
 
-**Resources.** About 0.2-0.4 GB RAM idle; browser-rendered routes add a few hundred MB while they run. Runs on Trial, Hobby and Pro.
+**Resources.** Measured idle: RSSHub about 0.17-0.3 GB RAM, Redis 0.05 GB; browser-rendered routes add a few hundred MB while they run. Runs on Trial, Hobby and Pro.
 
 **Licence.** RSSHub is AGPL-3.0. If you modify it and offer it over a network, publish your changes.
 

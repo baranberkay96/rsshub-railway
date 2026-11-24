@@ -31,14 +31,23 @@ Market (2026-11): "RSSHub | Open Source RSS Generator" 117 active, "RSSHub [Upda
 
 ## Resources
 
-See "Measured" below. Prices: RAM $10/GB-month, vCPU $20/month, volume $0.15/GB-month. Minimum plan: Trial.
+Measured on Railway 2026-11-24 (idle after a few feeds):
+
+| Service | RAM | CPU |
+|---|---|---|
+| RSSHub | 0.17-0.30 GB | ~0.01 vCPU idle |
+| Redis | 0.05 GB | ~0 |
+
+Total ≈ 0.25-0.35 GB ≈ **$3-4/month**. Prices: RAM $10/GB-month, vCPU $20/month, volume $0.15/GB-month. Minimum plan: Trial.
 
 ## Verification checklist
 
 1. Both services SUCCESS; `/` 200.
 2. A feed without key → 403 "Authentication failed"; with `?key=` → 200 RSS; with `?code=md5(path+key)` → 200.
 3. Second request served from Redis cache (`X-Cache` / faster response; keys in Redis).
-4. `ACCESS_KEY=abc` → SUCCESS with warning; feeds locked.
+4. `ACCESS_KEY=abc` → SUCCESS with warning; feeds locked (`?key=abc` 403).
+
+Tested 2026-11-24 on Railway: 1; 2 (`/hackernews`, `/github/issue/DIYgod/RSSHub`, `/github/repos/node-red` 200 with key and with `code`, 403 without/wrong key; `/healthz` is behind the key too, hence healthcheck `/`); 3 (first fetch 0.5-1.1 s, cached 0.25 s); 4. Not tested: a browser-rendered (Playwright) route.
 
 ## Open questions
 
